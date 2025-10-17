@@ -3,9 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Hello World Espectacular</title>
+    <style>
+        :root {
+            --bg-light: #f0f0f0;
+            --bg-dark: #222;
+            --text-light: #222;
+            --text-dark: #f0f0f0;
+            --accent: #ff9800;
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 32px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        body.dark .container {
+            background: rgba(34,34,34,0.85);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.2em;
+            color: var(--accent);
+            text-align: center;
+        }
+        .lang-select {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .lang-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lang-btn.active {
+            background: #333;
+        }
+        .theme-toggle {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.3em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .pacman-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        canvas {
+            background: #222;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        }
+        .pacman-title {
+            color: var(--accent);
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h1>HELLO WORLD!</h1>
+    <button class="theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="container">
+        <h1 id="hello">Hello World!</h1>
+        <div class="lang-select">
+            <button class="lang-btn active" data-lang="en">English</button>
+            <button class="lang-btn" data-lang="es">Español</button>
+            <button class="lang-btn" data-lang="fr">Français</button>
+            <button class="lang-btn" data-lang="de">Deutsch</button>
+            <button class="lang-btn" data-lang="it">Italiano</button>
+            <button class="lang-btn" data-lang="zh">中文</button>
+            <button class="lang-btn" data-lang="ja">日本語</button>
+        </div>
+        <p id="desc" style="text-align:center;font-size:1.2em;">Welcome to a spectacular Hello World page! Try changing the language and theme. Play Pacman below!</p>
+        <div class="pacman-section">
+            <div class="pacman-title">Pacman Minijuego</div>
+            <canvas id="pacmanCanvas" width="320" height="200"></canvas>
+            <div style="margin-top:8px;font-size:0.95em;color:#888;">Use arrow keys to move Pacman</div>
+        </div>
+    </div>
+    <script>
+        // Idiomas
+        const hellos = {
+            en: "Hello World!",
+            es: "¡Hola Mundo!",
+            fr: "Bonjour le monde!",
+            de: "Hallo Welt!",
+            it: "Ciao Mondo!",
+            zh: "你好，世界！",
+            ja: "こんにちは世界！"
+        };
+        const descs = {
+            en: "Welcome to a spectacular Hello World page! Try changing the language and theme. Play Pacman below!",
+            es: "¡Bienvenido a una página espectacular de Hello World! Prueba cambiar el idioma y el tema. ¡Juega Pacman abajo!",
+            fr: "Bienvenue sur une page Hello World spectaculaire ! Essayez de changer la langue et le thème. Jouez à Pacman ci-dessous !",
+            de: "Willkommen auf einer spektakulären Hello World-Seite! Ändere die Sprache und das Thema. Spiele Pacman unten!",
+            it: "Benvenuto in una pagina Hello World spettacolare! Prova a cambiare lingua e tema. Gioca a Pacman qui sotto!",
+            zh: "欢迎来到精彩的 Hello World 页面！试试切换语言和主题。下面玩吃豆人！",
+            ja: "素晴らしい Hello World ページへようこそ！言語とテーマを変えてみてください。下でパックマンを遊ぼう！"
+        };
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const lang = btn.getAttribute('data-lang');
+                document.getElementById('hello').textContent = hellos[lang];
+                document.getElementById('desc').textContent = descs[lang];
+            };
+        });
+        // Tema claro/oscuro
+        const themeBtn = document.getElementById('themeBtn');
+        let dark = false;
+        themeBtn.onclick = () => {
+            dark = !dark;
+            document.body.classList.toggle('dark', dark);
+            themeBtn.textContent = dark ? '☀️' : '🌙';
+        };
+        // Pacman Minijuego
+        const canvas = document.getElementById('pacmanCanvas');
+        const ctx = canvas.getContext('2d');
+        let pacman = { x: 40, y: 100, dir: 'right', size: 18, vx: 3, vy: 0 };
+        let dots = [];
+        let langKeys = Object.keys(hellos);
+        function resetGame() {
+            pacman.x = 40;
+            pacman.y = 100;
+            pacman.dir = 'right';
+            pacman.vx = 3;
+            pacman.vy = 0;
+            dots = [];
+            for(let i=60;i<canvas.width-20;i+=30) {
+                if(i === Math.floor((canvas.width-20)/2)) {
+                    dots.push({x:i,y:100,special:true});
+                } else {
+                    dots.push({x:i,y:100,special:false});
+                }
+            }
+            let winMsg = document.getElementById('winMsg');
+            if(winMsg) winMsg.remove();
+        }
+        resetGame();
+        function drawPacman() {
+            ctx.save();
+            ctx.translate(pacman.x, pacman.y);
+            let angle = 0.25 * Math.PI;
+            let end = 1.75 * Math.PI;
+            if(pacman.dir==='right') ctx.rotate(0);
+            if(pacman.dir==='left') ctx.rotate(Math.PI);
+            if(pacman.dir==='up') ctx.rotate(-0.5*Math.PI);
+            if(pacman.dir==='down') ctx.rotate(0.5*Math.PI);
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            ctx.arc(0,0,pacman.size,angle,end,false);
+            ctx.closePath();
+            ctx.fillStyle = '#ffeb3b';
+            ctx.fill();
+            // Eye
+            ctx.beginPath();
+            ctx.arc(6,-7,3,0,2*Math.PI);
+            ctx.fillStyle = '#222';
+            ctx.fill();
+            ctx.restore();
+        }
+        function drawDots() {
+            dots.forEach(dot => {
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, 5, 0, 2*Math.PI);
+                ctx.fillStyle = dot.special ? '#ff9800' : '#fff';
+                ctx.fill();
+            });
+        }
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            drawDots();
+            drawPacman();
+        }
+        function movePacman() {
+            pacman.x += pacman.vx;
+            pacman.y += pacman.vy;
+            // Bounds
+            pacman.x = Math.max(pacman.size, Math.min(canvas.width-pacman.size, pacman.x));
+            pacman.y = Math.max(pacman.size, Math.min(canvas.height-pacman.size, pacman.y));
+            // Eat dots & interact
+            let eaten = false;
+            dots = dots.filter(dot => {
+                if(Math.hypot(dot.x-pacman.x, dot.y-pacman.y)<=pacman.size) {
+                    eaten = dot;
+                    return false;
+                }
+                return true;
+            });
+            if(eaten) {
+                if(eaten.special) {
+                    themeBtn.click();
+                } else {
+                    let currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+                    let idx = langKeys.indexOf(currentLang);
+                    let nextIdx = (idx+1)%langKeys.length;
+                    let nextBtn = document.querySelector('.lang-btn[data-lang="'+langKeys[nextIdx]+'"]');
+                    nextBtn.click();
+                }
+            }
+            // Mensaje de victoria
+            if(dots.length === 0 && !document.getElementById('winMsg')) {
+                let win = document.createElement('div');
+                win.id = 'winMsg';
+                win.innerHTML = '¡Has ganado! Pacman ha interactuado con la web.<br><span style="font-size:0.9em;color:#888;">Pulsa R para jugar de nuevo</span>';
+                win.style = 'margin-top:18px;font-size:1.2em;color:#ff9800;text-align:center;';
+                document.querySelector('.pacman-section').appendChild(win);
+            }
+        }
+        document.addEventListener('keydown', e => {
+            if(e.key==='ArrowRight') {
+                pacman.dir='right'; pacman.vx=3; pacman.vy=0;
+            }
+            if(e.key==='ArrowLeft') {
+                pacman.dir='left'; pacman.vx=-3; pacman.vy=0;
+            }
+            if(e.key==='ArrowUp') {
+                pacman.dir='up'; pacman.vx=0; pacman.vy=-3;
+            }
+            if(e.key==='ArrowDown') {
+                pacman.dir='down'; pacman.vx=0; pacman.vy=3;
+            }
+            // Reiniciar si has ganado
+            if(e.key==='r' && dots.length === 0) {
+                resetGame();
+                running = true;
+                gameLoop();
+            }
+        });
+        let running = true;
+        function gameLoop() {
+            if(!running) return;
+            movePacman();
+            draw();
+            if(dots.length > 0) {
+                requestAnimationFrame(gameLoop);
+            } else {
+                running = false;
+            }
+        }
+        draw();
+        gameLoop();
+    </script>
+    </div>
 </body>
 </html>
