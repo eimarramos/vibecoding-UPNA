@@ -1,107 +1,49 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Hello World - VibeCoding</title>
-	<style>
-		body {
-			background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-			min-height: 100vh;
-			margin: 0;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-family: 'Segoe UI', Arial, sans-serif;
-		}
-		.hello-container {
-			background: rgba(255,255,255,0.1);
-			border-radius: 20px;
-			box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-			padding: 40px 60px;
-			text-align: center;
-			backdrop-filter: blur(8px);
-			border: 1px solid rgba(255,255,255,0.18);
-		}
-		h1 {
-			font-size: 3rem;
-			color: #fff;
-			margin-bottom: 10px;
-			letter-spacing: 2px;
-			text-shadow: 0 2px 8px #0004;
-		}
-		.wave {
-			display: inline-block;
-			animation: wave 1.2s infinite linear;
-		}
-		@keyframes wave {
-			0%, 60%, 100% { transform: rotate(0deg); }
-			10% { transform: rotate(14deg); }
-			20% { transform: rotate(-8deg); }
-			30% { transform: rotate(14deg); }
-			40% { transform: rotate(-4deg); }
-			50% { transform: rotate(10deg); }
-		}
-		p {
-			color: #e0e0e0;
-			font-size: 1.2rem;
-			margin-top: 0;
-		}
-		.btn {
-			margin-top: 30px;
-			padding: 12px 32px;
-			font-size: 1rem;
-			border: none;
-			border-radius: 8px;
-			background: #2a5298;
-			color: #fff;
-			cursor: pointer;
-			box-shadow: 0 2px 8px #0002;
-			transition: background 0.2s;
-		}
-		.btn:hover {
-			background: #1e3c72;
-		}
-		.message {
-			margin-top: 24px;
-			font-size: 1.1rem;
-			color: #ffd700;
-			opacity: 0;
-			transition: opacity 0.5s;
-		}
-		.message.show {
-			opacity: 1;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combate Pokémon</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="hello-container">
-		<h1>
-			<span class="wave">👋</span> Hello, World!
-		</h1>
-		<p>Welcome to a professional and original Hello World experience.<br>
-		Powered by <strong>HTML</strong>, <strong>CSS</strong> & <strong>JavaScript</strong>.</p>
-		<button class="btn" onclick="showMessage()">Vibe with me</button>
-		<div class="message" id="vibeMessage">You are vibing with code! 🚀</div>
-	</div>
-	<script>
-		function showMessage() {
-			const msg = document.getElementById('vibeMessage');
-			msg.classList.add('show');
-			msg.textContent = getRandomMessage();
-			setTimeout(() => msg.classList.remove('show'), 2500);
-		}
-		function getRandomMessage() {
-			const messages = [
-				'You are vibing with code! 🚀',
-				'Hello World, Hello You! 🌍',
-				'Keep coding, keep shining! ✨',
-				'Vibes detected: 100% positive! 😎',
-				'Welcome to the coding universe! 🌌'
-			];
-			return messages[Math.floor(Math.random() * messages.length)];
-		}
-	</script>
+    <div class="main-bg"></div>
+    <header class="header">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" alt="Pokeball" class="logo">
+        <h1>Combate Pokémon</h1>
+    </header>
+    <div class="container">
+        <div id="pokemon-select" class="panel">
+            <h2>Forma tu equipo (máx. 6)</h2>
+            <div class="teams-area">
+                <div class="team-panel">
+                    <h3>Tu equipo</h3>
+                    <div id="player-team" class="team-list"></div>
+                </div>
+                <div class="team-panel">
+                    <h3>Equipo CPU</h3>
+                    <div id="cpu-team" class="team-list"></div>
+                </div>
+            </div>
+            <div class="smash-grid" id="smash-grid">
+                <!-- Aquí se cargarán todos los Pokémon de la Gen 1 -->
+            </div>
+            <button id="start-battle-btn" class="start-btn" disabled>¡Empezar combate!</button>
+        </div>
+        <div id="battle-area" class="panel" style="display:none;">
+            <h2>¡Combate!</h2>
+            <div class="battle-ui">
+                <div id="player-pokemon" class="side"></div>
+                <div id="enemy-pokemon" class="side"></div>
+            </div>
+            <div id="move-select" class="move-ui"></div>
+            <div id="battle-log"></div>
+            <button id="restart-btn" style="display:none;margin-top:10px;">Reiniciar combate</button>
+        </div>
+    </div>
+    <footer class="footer">
+        <span>Hecho con ❤️ usando PokéAPI</span>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
